@@ -7,7 +7,10 @@ portfolio_file = "Data/portfolio.csv"
 prices_file = "Data/prices.csv"
 
 
-def read_portfolio_tuple(filename):
+def read_portfolio_tuple(filename: str) -> list:
+    """
+    Reads a portfolio's data from a csv file and return a list of tuples
+    """
     portfolio = []
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
@@ -18,7 +21,7 @@ def read_portfolio_tuple(filename):
     return portfolio
 
 
-def read_portfolio_dict(filename):
+def read_portfolio_dict(filename: str) -> list:
     portfolio = []
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
@@ -71,5 +74,9 @@ def print_report(report):
         print(f'{name:>10s} {shares:>10d} {f'${price:.2f}':>9s} {change:>10.2f}')
 
 
-report = make_report(portfolio_file, prices_file)
-print_report(report)
+def portfolio_report(portfolio_file, prices_file):
+    report = make_report(portfolio_file, prices_file)
+    print_report(report)
+
+
+portfolio_report(portfolio_file, prices_file)
