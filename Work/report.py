@@ -2,9 +2,7 @@
 #
 # Exercise 2.4
 import csv
-
-portfolio_file = "Data/portfolio.csv"
-prices_file = "Data/prices.csv"
+import sys
 
 
 def read_portfolio_tuple(filename: str) -> list:
@@ -79,4 +77,9 @@ def portfolio_report(portfolio_file, prices_file):
     print_report(report)
 
 
-portfolio_report(portfolio_file, prices_file)
+def main(argv):
+    portfolio_report(argv[0], argv[1])
+
+
+if __name__ == "__main__":
+    main(sys.argv)

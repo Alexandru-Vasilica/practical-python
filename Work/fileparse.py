@@ -27,6 +27,8 @@ def parse_csv(filename, select=None, types=None, has_header=False, delimiter=','
                 record = dict(zip(select, row))
                 records.append(record)
         else:
+            if select:
+                raise RuntimeError("Cannot select without headers")
             for row in rows:
                 record = tuple(row)
                 records.append(record)
@@ -36,4 +38,6 @@ def parse_csv(filename, select=None, types=None, has_header=False, delimiter=','
 
 # print(parse_csv("Data/portfolio.csv", select=['name', 'price', 'shares'], types=[str, float, int]))
 
-print(parse_csv("Data/portfolio.dat", delimiter=' '))
+# print(parse_csv("Data/portfolio.dat", delimiter=' '))
+
+print(parse_csv('Data/missing.csv', types=[str, int, float]))
