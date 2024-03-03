@@ -2,7 +2,9 @@
 #
 # Exercise 2.4
 import csv
-import sys
+
+import stock
+import tableformat
 
 
 def read_portfolio_tuple(filename: str) -> list:
@@ -30,6 +32,17 @@ def read_portfolio_dict(filename: str) -> list:
                 'shares': int(row[1]),
                 'price': float(row[2])
             }
+            portfolio.append(entry)
+    return portfolio
+
+
+def read_portfolio(filename: str) -> list:
+    portfolio = []
+    with open(filename, 'rt') as f:
+        rows = csv.reader(f)
+        headers = next(rows)
+        for row in rows:
+            entry = stock.Stock(row[0], int(row[1]), float(row[2]))
             portfolio.append(entry)
     return portfolio
 
@@ -64,22 +77,33 @@ def make_report(portfolio_filename, prices_filename):
     return report
 
 
-def print_report(report):
-    headers = ['Name', 'Shares', 'Price', 'Change']
-    print(f'{headers[0]:>10s} {headers[1]:>10s} {headers[2]:>10s} {headers[3]:>10s}')
-    print(f'{"":->10} {"":->10} {"":->10} {"":->10}')
+def print_report(report, formatter: tableformat.TableFormatter):
+    formatter.headings(['Name', 'Shares', 'Price', 'Change'])
+    # print(f'{headers[0]:>10s} {headers[1]:>10s} {headers[2]:>10s} {headers[3]:>10s}')
+    # print(f'{"":->10} {"":->10} {"":->10} {"":->10}')
     for name, shares, price, change in report:
-        print(f'{name:>10s} {shares:>10d} {f'${price:.2f}':>9s} {change:>10.2f}')
+        rowdata = [name, str(shares), f'{price:0.2f}', f'{change:0.2f}']
+        formatter.row(rowdata)
+        # print(f'{name:>10s} {shares:>10d} {f'${price:.2f}':>9s} {change:>10.2f}')
 
 
-def portfolio_report(portfolio_file, prices_file):
+def portfolio_report(portfolio_file, prices_file, fmt='txt'):
+    if fmt == 'txt':
+        formatter = tableformat.TableFormatter()
+    elif fmt == 'csv':
+        formatter = tableformat.CSVTableFormatter()
+    elif fmt == 'html':
+        formatter = tableformat.HTMLTableFormatter()
+    else:
+        raise tableformat.FormatError(f'Invalid format: {fmt}')
+
     report = make_report(portfolio_file, prices_file)
-    print_report(report)
+    print_report(report, formatter)
 
 
 def main(argv):
-    portfolio_report(argv[0], argv[1])
+    portfolio_report("Data/portfolio.csv", "Data/prices.csv", fmt='csv')
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main(None)
